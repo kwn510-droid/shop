@@ -8,11 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Servlet implementation class CustomerIndexControllter
+ * Servlet implementation class EmpLogoutController
  */
-@WebServlet("/customer/customerIndex")
-public class CustomerIndexControllter extends HttpServlet {
+@WebServlet("/emp/empLogout")
+public class EmpLogoutController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/view/customer/customerIndex.jsp");
+		request.getSession().invalidate();
+		response.sendRedirect(request.getContextPath()+"/home");
 	}
 }

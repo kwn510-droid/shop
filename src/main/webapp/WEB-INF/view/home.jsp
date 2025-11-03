@@ -7,6 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<h1>home</h1>
+	<div>
+		<a href="${pageContext.request.contextPath}/out/Login">로그인</a>
+	</div>
 </body>
+
 </html>

@@ -7,10 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
-@WebServlet("/Home")
-public class HomeController extends HttpServlet {
+/**
+ * Servlet implementation class CustomerIndexControllter
+ */
+@WebServlet("/customer/customerIndex")
+public class CustomerIndexControllter extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/view/home.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/view/customer/customerIndex.jsp");
 	}
 }

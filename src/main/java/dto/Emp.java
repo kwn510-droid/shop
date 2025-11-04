@@ -5,7 +5,7 @@ public class Emp {
 	private String empId;
 	private String empPw;
 	private String empName;
-	private String active;
+	private int active;
 	private String createdate;
 	public int getEmpCode() {
 		return empCode;
@@ -31,10 +31,10 @@ public class Emp {
 	public void setEmpName(String empName) {
 		this.empName = empName;
 	}
-	public String getActive() {
+	public int getActive() {
 		return active;
 	}
-	public void setActive(String active) {
+	public void setActive(int active) {
 		this.active = active;
 	}
 	public String getCreatedate() {

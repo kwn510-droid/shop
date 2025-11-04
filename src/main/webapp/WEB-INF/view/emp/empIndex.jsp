@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="<c:url value='/static/css/app.css'/>">
 </head>
 <body>
-  <!-- 상단 메뉴 인클루드 -->
-  <%@ include file="/WEB-INF/view/inc/mainMenu.jsp" %> 
+  <!-- empMenu 인클루드 -->
+  <c:import url ="/WEB-INF/view/inc/empMenu.jsp"></c:import>  
 	  <div class="container">
     <h1>EMP</h1>
     <p class="msg">직원 전용 대시보드입니다.</p>

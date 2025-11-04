@@ -9,7 +9,7 @@
 </head>
 <body>
 	<!-- 상단 메뉴 인클루드 -->
-	<%@ include file="/WEB-INF/view/inc/mainMenu.jsp" %>
+	<%@ include file="/WEB-INF/view/inc/empMenu.jsp" %>
 	<div>
 		   ${sessionScope.loginCustomer.customerName}님 반갑습니다.
 		   (point: ${sessionScope.loginCustomer.point})

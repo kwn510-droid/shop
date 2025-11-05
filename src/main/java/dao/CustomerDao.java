@@ -7,6 +7,25 @@ import java.sql.ResultSet;
 import dto.Customer;
 
 public class CustomerDao {
+	public boolean existsCustomerId(String customerId) throws Exception {
+		String sql = "select count(*) from customer where customer_id = ?";
+		Connection conn = DBConnection.getConnection();
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = null;
+		
+		stmt.setString(1, customerId);
+		rs = stmt.executeQuery();
+		rs.next();
+		boolean exists = rs.getInt(1) > 0;
+		
+		rs.close();
+		stmt.close();
+		conn.close();
+		return exists;
+		
+		
+	}
+	
 	//로그인
 	public Customer selectCustomerByLogin(String customerId, String customerPw) throws Exception {
 		String sql = """

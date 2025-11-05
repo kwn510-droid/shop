@@ -9,7 +9,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-  <%@ include file="/WEB-INF/view/inc/mainMenu.jsp" %>
   <div class="container">
 	<h1>login</h1>
 	<form id="loginForm" method="post" action="${pageContext.request.contextPath}/out/Login" novalidate>

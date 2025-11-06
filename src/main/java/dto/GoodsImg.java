@@ -2,22 +2,23 @@ package dto;
 
 public class GoodsImg {
 	private int goodsCode;
-	private String fileName;
+	private String filename;
 	private String originName;
 	private String contentType;
 	private String createdate;
-	private long fileSize;
+	private long filesize;
+	
 	public int getGoodsCode() {
 		return goodsCode;
 	}
 	public void setGoodsCode(int goodsCode) {
 		this.goodsCode = goodsCode;
 	}
-	public String getFileName() {
-		return fileName;
+	public String getFilename() {
+		return filename;
 	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	public String getOriginName() {
 		return originName;
@@ -37,11 +38,11 @@ public class GoodsImg {
 	public void setCreatedate(String createdate) {
 		this.createdate = createdate;
 	}
-	public long getFileSize() {
-		return fileSize;
+	public long getFilesize() {
+		return filesize;
 	}
-	public void setFileSize(long fileSize) {
-		this.fileSize = fileSize;
+	public void setFilesize(long filesize) {
+		this.filesize = filesize;
 	}
 	
 	

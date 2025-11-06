@@ -1,82 +1,91 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>고객 목록</title>
-
-<!-- 기존 app.css 연결 -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/app.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  table { width:100%; border-collapse:collapse; margin-top:16px; table-layout:fixed; }
+  th, td { padding:10px 8px; text-align:center; border-bottom:1px solid #e5e7eb; white-space:nowrap; }
+  th { background:#f9fafb; color:#374151; font-weight:600; }
+  tr:hover { background:#f5f6ff; }
+
+  
+  table th:nth-child(3), table td:nth-child(3) { width: 120px; } /* 이름 */
+  table th:nth-child(5), table td:nth-child(5) { width: 100px; } /* 포인트 */
+
+  .btn-danger { display:inline-block; padding:6px 10px; border-radius:8px; background:#e11d48; color:#fff; font-size:12px; }
+  .btn-danger:hover { background:#be123c; }
+  .pagination { text-align:center; margin-top:18px; }
+  .pagination a { margin:0 6px; color:#2563eb; text-decoration:none; }
+  .pagination .current { font-weight:bold; color:#111; }
+</style>
 </head>
+<!-- 상단 메뉴 include -->
+    <c:import url="/WEB-INF/view/inc/empMenu.jsp"></c:import>
+    <hr style="border:none;border-top:1px solid #eee;margin:12px 0 16px;">
 
 <body>
-  <!-- 상단 메뉴 -->
-  <div class="nav">
-    <a href="<c:url value='/emp/empIndex'/>">직원홈</a>
-    <a href="<c:url value='/customer/list'/>" class="active">고객관리</a>
-    <a href="<c:url value='/emp/goodsList'/>">상품관리</a>
-    <a href="<c:url value='/emp/orderList'/>">주문관리</a>
-  </div>
 
-  <div class="container">
-    <h1>고객 관리</h1>
-    <p class="msg">총 ${totalCount}명의 고객이 있습니다.</p>
+<div class="container">
+  <h1>고객 관리</h1>
+  <p class="msg">총 ${totalCount}명의 고객이 있습니다.</p>
 
-    <div style="margin-bottom:12px; text-align:right;">
-      <a href="<c:url value='/customer/addCustomer'/>" class="badge">+ 고객추가</a>
-    </div>
-
-    <table border="0" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse;">
-      <thead style="background:#f3f4f6;">
-        <tr style="border-bottom:1px solid #e5e7eb;">
-          <th align="left">고객코드</th>
-          <th align="left">아이디</th>
-          <th align="left">이름</th>
-          <th align="left">전화번호</th>
-          <th align="left">포인트</th>
-          <th align="left">가입일</th>
-        </tr>
-      </thead>
-      <tbody>
-        <c:if test="${empty customerList}">
-          <tr><td colspan="6" style="text-align:center; color:#9ca3af;">데이터가 없습니다.</td></tr>
-        </c:if>
-
-        <c:forEach var="cst" items="${customerList}">
-          <tr style="border-bottom:1px solid #f1f5f9;">
-            <td>${cst.customerCode}</td>
-            <td>${cst.customerId}</td>
-            <td>${cst.customerName}</td>
-            <td>${cst.customerPhone}</td>
-            <td>${cst.point}</td>
-            <td>${cst.createdate}</td>
-          </tr>
-        </c:forEach>
-      </tbody>
-    </table>
-
-    <!-- 페이징 -->
-    <div style="margin-top:18px; text-align:center;">
+  <table>
+    <thead>
+      <tr>
+        <th>고객코드</th>
+        <th>아이디</th>
+        <th>이름</th>
+        <th>전화번호</th>
+        <th>포인트</th>
+        <th>가입일</th>
+        <th>강퇴</th>
+      </tr>
+    </thead>
+    <tbody>
       <c:choose>
-        <c:when test="${currentPage > 1}">
-          <a href="<c:url value='/emp/customerList'>
-                     <c:param name='currentPage' value='${currentPage-1}'/>
-                     <c:param name='rowPerPage' value='${rowPerPage}'/>
-                   </c:url>">[이전]</a>
+        <c:when test="${empty customerList}">
+          <tr><td colspan="7">데이터가 없습니다.</td></tr>
         </c:when>
-        <c:otherwise>[이전]</c:otherwise>
+
+        <c:otherwise>
+          <c:forEach var="cst" items="${customerList}">
+            <tr>
+              <td>${cst.customerCode}</td>
+              <td>${cst.customerId}</td>
+              <td>${cst.customerName}</td>
+              <td>${cst.customerPhone}</td>
+              <td>${cst.point}</td>
+              <td>${fn:substring(cst.createdate, 0, 10)}</td>
+              <td>
+                <a href="<c:url value='/emp/removeCustomerByEmp'>
+                          <c:param name='customerId' value='${cst.customerId}'/>
+                          <c:param name='memo' value='강제탈퇴(불량)'/>
+                          <c:param name='currentPage' value='${currentPage}'/>
+                          <c:param name='rowPerPage' value='${rowPerPage}'/>
+                        </c:url>"
+                   onclick="return confirm('정말 ${cst.customerId} 님을 강퇴하시겠습니까? ');"
+                   class="btn-danger">강퇴</a>
+              </td>
+            </tr>
+          </c:forEach>
+        </c:otherwise>
       </c:choose>
+    </tbody>
+  </table>
 
-      &nbsp;<span class="badge">${currentPage}</span>&nbsp;
-
-      <a href="<c:url value='/emp/customerList'>
-                 <c:param name='currentPage' value='${currentPage+1}'/>
-                 <c:param name='rowPerPage' value='${rowPerPage}'/>
-               </c:url>">[다음]</a>
-    </div>
+  <div class="pagination">
+    <a href="?currentPage=${currentPage-1 < 1 ? 1 : currentPage-1}&rowPerPage=${rowPerPage}">이전</a>
+    <span class="current">${currentPage}</span>
+    <a href="?currentPage=${currentPage+1 > lastPage ? lastPage : currentPage+1}&rowPerPage=${rowPerPage}">다음</a>
   </div>
+
+</div>
+
 </body>
 </html>

@@ -34,7 +34,7 @@ public class CustomerListController extends HttpServlet {
 		this.customerDao = new CustomerDao();
 		List<Customer> customerList = null;
 		try {
-			customerList = customerDao.selectCustomerList(beginRow, rowPerPage);
+			customerList = customerDao.selectCustomerList(currentPage, rowPerPage);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

@@ -11,8 +11,8 @@ import dto.Customer;
 import dto.Outid;
 
 public class CustomerDao {
-	// 탈퇴회원 목록 페이징 조회
-	// 탈퇴회원 목록 페이징 조회 (Oracle 버전)
+	
+	// 탈퇴회원 목록 페이징 조회 
 	public List<Outid> selectOutidList(int currentPage, int rowPerPage) throws Exception {
 	    int startRow = (currentPage - 1) * rowPerPage + 1;
 	    int endRow   = currentPage * rowPerPage;

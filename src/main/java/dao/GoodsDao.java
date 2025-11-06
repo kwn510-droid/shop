@@ -24,7 +24,7 @@ public class GoodsDao {
 		""";
 		
 		String sqlGoods = """
-			insert into goods(goods_code, goods_name, goods_price, emp_code, porint_rate, soldout, createdate)
+			insert into goods(goods_code, goods_name, goods_price, emp_code, point_rate, soldout, createdate)
 			values(?, ?, ?, ?, ?, null, sysdate)	
 		""";
 		

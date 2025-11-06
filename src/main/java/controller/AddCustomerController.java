@@ -10,14 +10,15 @@ import java.io.IOException;
 
 @WebServlet("/out/addCustomer")
 public class AddCustomerController extends HttpServlet {
-	// Form
-	protected void doGet(HttpServletRequest request, HttpServletResponse response
-			) throws ServletException, IOException {
-	    request.getRequestDispatcher("/WEB-INF/view/out/addCustomer.jsp").forward(request, response);
+	// 폼
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// /out/addMember.jsp
+		request.getRequestDispatcher("/WEB-INF/view/out/addMember.jsp").forward(request, response);
 	}
-	// Action
+
+	// 액션
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//CustomerDao.insertCustomer(Customer)
-		response.sendRedirect(request.getContextPath()+"/out/login");
+		// CustomerDao.insertCustomer(Customer)
+		response.sendRedirect(request.getContextPath()+"/out/login"); 
 	}
 }

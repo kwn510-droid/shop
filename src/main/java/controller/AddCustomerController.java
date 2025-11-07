@@ -11,10 +11,11 @@ import java.io.IOException;
 @WebServlet("/out/addCustomer")
 public class AddCustomerController extends HttpServlet {
 	// 폼
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// /out/addMember.jsp
-		request.getRequestDispatcher("/WEB-INF/view/out/addMember.jsp").forward(request, response);
-	}
+	  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+		      throws ServletException, IOException {
+		    request.getRequestDispatcher("/WEB-INF/view/out/addCustomer.jsp")
+		           .forward(request, response);
+		  }
 
 	// 액션
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

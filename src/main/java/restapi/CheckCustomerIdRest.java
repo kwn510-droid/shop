@@ -13,20 +13,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/rest/checkCustomerId")
 public class CheckCustomerIdRest extends HttpServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response
-			) throws ServletException, IOException {
-		 String id = request.getParameter("id");
+	  @Override
+	  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	      throws ServletException, IOException {
+	    String id = request.getParameter("id");
+	    boolean exists = false;
+	    try { exists = new CustomerDao().existsCustomerId(id); } catch (Exception ignore) {}
 
-	        boolean exists = false;
-	        try {
-	            CustomerDao customerDao = new CustomerDao();
-	            exists = customerDao.existsCustomerId(id);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-
-	        PrintWriter out = response.getWriter();
-	        out.print("{\"exists\": " + exists + "}");
-	        out.close();
+	    response.setCharacterEncoding("UTF-8");
+	    response.setContentType("application/json");
+	    try (PrintWriter out = response.getWriter()) {
+	      out.print("{\"exists\":" + exists + "}");
 	    }
+	  }
 	}

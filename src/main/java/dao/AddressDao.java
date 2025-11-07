@@ -26,12 +26,13 @@ public class AddressDao {
 		
 		String sql3 = """
 			insert into address(address_code, customer_code, address, createdate)
-			valeus(seq_address.nextval, ?, ?, sysdate)	
+			values(seq_address.nextval, ?, ?, sysdate)	
 		""";
 		try {
 			conn = DBConnection.getConnection();
 			conn.setAutoCommit(false);
 			stmt1 = conn.prepareStatement(sql1);
+			stmt1.setInt(1, address.getCustomerCode());
 			rs1 = stmt1.executeQuery();
 			rs1.next();
 			int cnt = rs1.getInt(1);

@@ -38,7 +38,7 @@ $(document).ready(function() {
 <body>
   <div class="container">
     <h1>회원가입</h1>
-    <form action="${pageContext.request.contextPath}/addCustomer" method="post">
+    <form action="${pageContext.request.contextPath}/out/addCustomer" method="post">
       <div class="row">
         <label for="id">아이디</label>
         <input type="text" id="id" name="customerId" placeholder="아이디 입력" required>
@@ -57,7 +57,8 @@ $(document).ready(function() {
       </div>
 
       <div class="actions">
-        <button type="submit">회원가입</button>
+        <<button type="button" class="secondary"
+        onclick="location.href='${pageContext.request.contextPath}/out/addCustomer'">회원가입</button>
         <button type="button" class="secondary" onclick="location.href='${pageContext.request.contextPath}/login'">로그인</button>
       </div>
     </form>

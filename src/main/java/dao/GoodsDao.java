@@ -13,6 +13,21 @@ import dto.Goods;
 import dto.GoodsImg;
 
 public class GoodsDao {
+	 //  전체 행 수 (soldout 제외)
+    public int selectGoodsCount() throws Exception {
+        String sql = """
+            SELECT COUNT(*)
+            FROM goods
+            WHERE soldout IS NULL
+        """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            rs.next();
+            return rs.getInt(1);
+        }
+    }
+	
 	// rowPerPage : goodsList(10개), customerIndex(20개)
 	public List<Map<String, Object>> selectBestGoodsList() throws Exception {
 	    List<Map<String, Object>> list = new ArrayList<>();

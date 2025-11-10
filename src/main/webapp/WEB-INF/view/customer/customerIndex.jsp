@@ -90,6 +90,34 @@
 				
 			</tr>
 		</table>
+<!-- 페이지네이션 -->
+<div style="margin:16px 0; text-align:center;">
+  <c:if test="${startPage > 1}">
+    <a href="<c:url value='/customer/customerIndex'><c:param name='currentPage' value='1'/></c:url>">« 처음</a>
+    <a href="<c:url value='/customer/customerIndex'><c:param name='currentPage' value='${startPage-1}'/></c:url>">‹ 이전</a>
+  </c:if>
+
+  <c:forEach var="p" begin="${startPage}" end="${endPage}">
+    <c:choose>
+      <c:when test="${p == currentPage}">
+        <span style="font-weight:700; padding:0 6px;">[${p}]</span>
+      </c:when>
+      <c:otherwise>
+        <a style="padding:0 6px;"
+           href="<c:url value='/customer/customerIndex'><c:param name='currentPage' value='${p}'/></c:url>">${p}</a>
+      </c:otherwise>
+    </c:choose>
+  </c:forEach>
+
+  <c:if test="${endPage < lastPage}">
+    <a href="<c:url value='/customer/customerIndex'><c:param name='currentPage' value='${endPage+1}'/></c:url>">다음 ›</a>
+    <a href="<c:url value='/customer/customerIndex'><c:param name='currentPage' value='${lastPage}'/></c:url>">끝 »</a>
+  </c:if>
+
+  <div style="margin-top:6px; color:#6b7280; font-size:13px;">
+    총 ${count}건 · ${currentPage}/${lastPage}페이지
+  </div>
+</div>		
 	</div>
 </body>
 </html>

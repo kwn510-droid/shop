@@ -33,5 +33,49 @@
 	<a class="badge" href="<c:url value='/home'/>">홈으로</a>
 	  </div>
 	</div>
+	<h2>인기 상품목록</h2>
+	<!-- 베스트 : 가장 많이 주문(주문완료)된 상품 5개 -->
+	<div>
+		베스트상품(5개)		
+	</div>
+	<hr>
+	
+	<h2>상품목록</h2>
+	<div>
+		<table = border = "1" width = "70%">
+			<tr>
+				<!-- c:forEach varStatus : index(0~), count(1~), first(true/false), last(true/false) -->
+				<c:forEach var="m" items="${goodsList}" varStatus="state">
+					<td>
+						<!-- image -->
+						<div>
+							<img src="${pageContext.request.contextPath}/upload/${m.filename}">
+						</div>
+						<!-- 이름, 가격 -->
+						<div>
+							${m.goodsName}<br>
+							${m.goodsPrice}
+							
+							<br>${state.last}
+						</div>
+					</td>
+					<c:if test="${state.last == false && state.count % 5 == 0}">
+						</tr><tr>
+					</c:if>
+				</c:forEach>
+				
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+

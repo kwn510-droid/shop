@@ -6,6 +6,7 @@ public class Notice {
 	    private String noticeContent;
 	    private int empCode;
 	    private String createdate;
+	    
 		public int getNoticeCode() {
 			return noticeCode;
 		}

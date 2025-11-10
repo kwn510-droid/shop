@@ -9,7 +9,7 @@
 </head>
 <body>
 	<!-- 상단 메뉴 인클루드 -->
-	<%@ include file="/WEB-INF/view/inc/empMenu.jsp" %>
+	<%@ include file="/WEB-INF/view/inc/customerMenu.jsp" %>
 	<div>
 		   ${sessionScope.loginCustomer.customerName}님 반갑습니다.
 		   (point: ${sessionScope.loginCustomer.point})
@@ -36,8 +36,32 @@
 	<h2>인기 상품목록</h2>
 	<!-- 베스트 : 가장 많이 주문(주문완료)된 상품 5개 -->
 	<div>
-		베스트상품(5개)		
-	</div>
+  <table border="1" width="70%">
+    <tr>
+      <c:forEach var="m" items="${bestList}" varStatus="st">
+        <td>
+          <div>
+            <c:choose>
+              <c:when test="${not empty m.filename}">
+                <img src="${pageContext.request.contextPath}/upload/${m.filename}" style="max-width:120px;">
+              </c:when>
+              <c:otherwise>
+                <img src="${pageContext.request.contextPath}/static/img/no-image.png" style="max-width:120px;">
+              </c:otherwise>
+            </c:choose>
+          </div>
+          <div>
+            ${m.goodsName}<br>
+            ${m.goodsPrice}
+          </div>
+        </td>
+        <c:if test="${!st.last && st.count % 5 == 0}">
+          </tr><tr>
+        </c:if>
+      </c:forEach>
+    </tr>
+  </table>
+</div>
 	<hr>
 	
 	<h2>상품목록</h2>

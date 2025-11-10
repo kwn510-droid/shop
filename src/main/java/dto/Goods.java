@@ -50,6 +50,4 @@ public class Goods {
 	public void setCreatedate(String createdate) {
 		this.createdate = createdate;
 	}
-	
-	
 }

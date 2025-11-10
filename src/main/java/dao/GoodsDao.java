@@ -14,24 +14,49 @@ import dto.GoodsImg;
 
 public class GoodsDao {
 	// rowPerPage : goodsList(10개), customerIndex(20개)
-	public List<Map<String, Object>> selectBestGoodsList() {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		String sql = """
-			select 
-			        gi.filename filename
-			        , g.goods_code goodsCode
-			        , g.goods_name goodsName
-			        , g.goods_price goodsPrice
-			from
-			goods g inner join goods_img gi
-			on g.goods_code = gi.goods_code
-			    inner join(select goods_code, count(*) from orders
-			                        group by goods_code
-			                        order by count(*) desc
-			                        offset 0 rows fetch next 5 rows only) t
-			    on g.goods_code = t.goods_code	
-		""";
-		return list;
+	public List<Map<String, Object>> selectBestGoodsList() throws Exception {
+	    List<Map<String, Object>> list = new ArrayList<>();
+
+	    // 주문이 많은 상품 5개 + 대표이미지 조인
+	    // ※ 주문 상태를 '주문완료'로 한정하려면: inner subquery에 WHERE order_state='주문완료' 추가
+	    String sql = """
+	    		WITH img1 AS (
+	    		  SELECT goods_code, filename,
+	    		         ROW_NUMBER() OVER (PARTITION BY goods_code ORDER BY createdate DESC) rn
+	    		  FROM goods_img
+	    		),
+	    		tot AS (
+	    		  SELECT goods_code, SUM(order_quantity) AS total_qty
+	    		  FROM orders
+	    		  -- WHERE order_state = '주문완료'
+	    		  GROUP BY goods_code
+	    		)
+	    		SELECT g.goods_code AS goodsCode,
+	    		       g.goods_name AS goodsName,
+	    		       g.goods_price AS goodsPrice,
+	    		       i.filename    AS filename,
+	    		       t.total_qty   AS totalQty
+	    		FROM tot t
+	    		JOIN goods g   ON g.goods_code = t.goods_code
+	    		LEFT JOIN img1 i ON i.goods_code = g.goods_code AND i.rn = 1
+	    		ORDER BY t.total_qty DESC, g.goods_code DESC
+	    		FETCH FIRST 5 ROWS ONLY
+	    		""";
+
+	    try (Connection conn = DBConnection.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql);
+	         ResultSet rs = ps.executeQuery()) {
+
+	        while (rs.next()) {
+	            Map<String, Object> row = new HashMap<>();
+	            row.put("filename",   rs.getString("filename"));
+	            row.put("goodsCode",  rs.getInt("goodsCode"));
+	            row.put("goodsName",  rs.getString("goodsName"));
+	            row.put("goodsPrice", rs.getInt("goodsPrice"));
+	            list.add(row);
+	        }
+	    }
+	    return list;
 	}
 	
 	// rowPerPage : /emp/goodsList(10개), /customer/customerIndex(20개)
@@ -61,7 +86,7 @@ public class GoodsDao {
 			while(rs.next()) {
 				Map<String, Object> m = new HashMap<String, Object>();
 				m.put("filename", rs.getString("filename"));
-				m.put("goodsCode",  rs.getString("goodsCode"));
+				m.put("goodsCode",  rs.getInt("goodsCode"));   // getInt 권장
 				m.put("goodsName",  rs.getString("goodsName"));
 				m.put("goodsPrice",  rs.getInt("goodsPrice"));
 				list.add(m);

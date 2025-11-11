@@ -66,8 +66,8 @@ public class CustomerDao {
 	// 직원에 의해 강제탈퇴: OUTID 기록 + CUSTOMER 삭제 (둘 다 되면 커밋, 아니면 롤백)
 	public void deleteCustomerByEmp(Outid outid){
 		Connection conn = null;
-		PreparedStatement stmtCustomer = null;
-		PreparedStatement stmtOutid = null;
+		PreparedStatement psmtCustomer = null;
+		PreparedStatement psmtOutid = null;
 		String sqlCustomer = """
 				delete from customer where customer_id = ?
 				""";		
@@ -77,27 +77,23 @@ public class CustomerDao {
 				""";
 		// JDBC Connection의 기본 commit설정값 auto commit = true : false 변경 후 transaction 적용
 		try {
-			conn = DBConnection.getConnection();
-			conn.setAutoCommit(false);// 개발자가 commit / rollback 직접 구현이 필요
+	        conn = DBConnection.getConnection();
+	        conn.setAutoCommit(false);// 개발자가 commit / rollback 직접 구현이 필요
 			
 			// customer 삭제
-			stmtCustomer = conn.prepareStatement(sqlCustomer);
-			stmtCustomer.setString(1, outid.getId()); // 파라미터 설정
-			int row = stmtCustomer.executeUpdate();
+	        psmtCustomer = conn.prepareStatement(sqlCustomer);
+			psmtCustomer.setString(1, outid.getId()); // 파라미터 설정
+			int row = psmtCustomer.executeUpdate();
 			if(row != 1) {
 				throw new SQLException("삭제할 고객이 존재하지 않음: " + outid.getId());
 			}
 			
 			// outid 저장
 			
-			stmtOutid = conn.prepareStatement(sqlOutid);
-			stmtOutid.setString(1, outid.getId()); // 파라미터 설정
-			stmtOutid.setString(2,
-		            (outid.getMemo() == null || outid.getMemo().isBlank()) 
-	                ? "강제탈퇴" 
-	                : outid.getMemo()
-	        );
-	        stmtOutid.executeUpdate();
+			psmtOutid = conn.prepareStatement(sqlOutid);
+			psmtOutid.setString(1, outid.getId()); // 파라미터 설정
+			psmtOutid.setString(2, outid.getMemo() == null ? "강제탈퇴" : outid.getMemo());
+			psmtOutid.executeUpdate();
 
 	        conn.commit(); // 성공 시 commit
 		
@@ -112,12 +108,12 @@ public class CustomerDao {
 		} finally {
 	        // 자원 정리
 	        try {
-	            if(stmtOutid != null) stmtOutid.close();
+	            if(psmtOutid != null) psmtOutid.close();
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
 	        try {
-	            if(stmtCustomer != null) stmtCustomer.close();
+	            if(psmtCustomer != null) psmtCustomer.close();
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
@@ -242,5 +238,29 @@ public class CustomerDao {
         conn.close();
 
 		return c;
+	}
+	
+	// 회원가입 시 customer 데이터 insert 메서드
+	public int insertCustomer(Customer customer) throws Exception {
+		String sql = """
+				Insert INTO customer(
+				customer_code, customer_id, customer_pw
+				, customer_name, customer_phone, point
+				, createdate, gender
+				) values (
+					seq_customer.NEXTVAL, ?, ?, ?, ?, 0, SYSDATE, ?)
+				""" ;
+		
+		try(Connection conn = DBConnection.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(sql)) {
+			
+			stmt.setString(1, customer.getCustomerId());
+	        stmt.setString(2, customer.getCustomerPW());
+	        stmt.setString(3, customer.getCustomerName());
+	        stmt.setString(4, customer.getCustomerPhone());
+	        stmt.setString(5, customer.getGender());
+
+	        return stmt.executeUpdate();
+	    }
 	}
 }

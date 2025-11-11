@@ -11,11 +11,11 @@
 <body>
   <div class="container">
 	<h1>login</h1>
-	<form id="loginForm" method="post" action="${pageContext.request.contextPath}/out/Login" novalidate>
+	<form id="loginForm" method="post" action="${pageContext.request.contextPath}/out/login" novalidate>
       <div class="row">
         <label for="id">id</label>
         <div style="flex:1">
-          <input value="cust01" type="text" id="id" name="id" placeholder="아이디">
+          <input value="emp1" type="text" id="id" name="id" placeholder="아이디">
           <div id="err-id" class="err">아이디는 3자 이상 입력해 주세요.</div>
         </div>
       </div>
@@ -23,7 +23,7 @@
       <div class="row">
         <label for="pw">pw</label>
         <div style="flex:1">
-          <input value="1234" type="password" id="pw" name="pw" placeholder="비밀번호">
+          <input value="java1234" type="password" id="pw" name="pw" placeholder="비밀번호">
           <div id="err-pw" class="err">비밀번호는 4자 이상 입력해 주세요.</div>
         </div>
       </div>
@@ -43,6 +43,12 @@
       </div>
     </form>
   </div>
+  <c:if test="${not empty sessionScope.msg}">
+  <div style="background:#e0f7ff; padding:10px; border-radius:6px; margin-bottom:15px;">
+    ${sessionScope.msg}
+  </div>
+  <c:remove var="msg" scope="session"/>
+</c:if>
 
 <script>
 $(function(){

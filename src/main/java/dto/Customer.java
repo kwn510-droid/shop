@@ -8,7 +8,14 @@ public class Customer {
 	private String customerPhone;
 	private int point;
 	private String createdate;
+	private String gender;
 	
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 	public int getCustomerCode() {
 		return customerCode;
 	}
@@ -55,6 +62,7 @@ public class Customer {
 	public String toString() {
 		return "Customer [customerCode=" + customerCode + ", customerId=" + customerId + ", customerPW=" + customerPW
 				+ ", customerName=" + customerName + ", customerPhone=" + customerPhone + ", point=" + point
-				+ ", createdate=" + createdate + "]";
+				+ ", createdate=" + createdate + ", gender=" + gender + "]";
 	}
+
 }

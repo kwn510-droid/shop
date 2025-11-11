@@ -13,6 +13,52 @@ import dto.Goods;
 import dto.GoodsImg;
 
 public class GoodsDao {
+	// customer/goodsOne
+	public Map<String, Object> selectGoodsOne(int goods_code) {		
+		Map<String, Object> map = new HashMap<String, Object>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String sql = """
+			select 
+					gi.filename filename
+					, g.goods_code goodsCode
+					, g.goods_name goodsName
+					, g.goods_price goodsPrice
+					, nvl(g.soldout,' ') soldout
+					, g.point_rate pointRate
+			from goods g inner join goods_img gi
+			on g.goods_code = gi.goods_code
+			where g.goods_code = ?
+		""";
+		try {
+			conn = DBConnection.getConnection();
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, goods_code);
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				map.put("filename", rs.getString("filename"));
+				map.put("goodsCode",  rs.getInt("goodsCode"));   // getInt 권장
+				map.put("goodsName",  rs.getString("goodsName"));
+				map.put("goodsPrice",  rs.getInt("goodsPrice"));
+				map.put("soldout",  rs.getInt("soldout"));
+				map.put("pointRate",  rs.getInt("pointRate"));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(stmt != null) stmt.close();
+				if(conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return map;
+	}
+	
+	
 	 //  전체 행 수 (soldout 제외)
     public int selectGoodsCount() throws Exception {
         String sql = """

@@ -1,4 +1,4 @@
-package restapi;
+package ajax;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,8 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class TotalOrderAndSalesRestController
  */
-@WebServlet("/totalOrder")
-public class TotalOrderRestController extends HttpServlet {
+@WebServlet("/emp/totalRevenue")
+public class TotalRevenueRestController extends HttpServlet {
 	private StatsDao statsDao;
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String fromYM = request.getParameter("fromYM");
@@ -27,12 +27,12 @@ public class TotalOrderRestController extends HttpServlet {
 
 		response.setContentType("application/json;charset=UTF-8");
 		statsDao = new StatsDao();
-		List<Map<String, Object>> orderList = statsDao.selectOrderTotalCntByYM(fromYM, toYM);
+		List<Map<String, Object>> RevenueList = statsDao.selectOrderTotalRevenueByYM(fromYM, toYM);
 		
 	
 	
 		Gson gson = new Gson();
-		String jsonResult = gson.toJson(orderList);
+		String jsonResult = gson.toJson(RevenueList);
 		PrintWriter out = response.getWriter();
 		out.print(jsonResult);
 		out.flush();

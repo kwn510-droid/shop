@@ -1,5 +1,5 @@
 // EmpActiveApi.java
-package restapi;
+package ajax;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/emp/api/active")
-public class EmpActiveApi extends HttpServlet {
+@WebServlet("/emp/active")
+public class EmpActiveRestController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {

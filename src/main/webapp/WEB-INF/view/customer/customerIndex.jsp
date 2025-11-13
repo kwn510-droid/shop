@@ -77,7 +77,7 @@
 						</div>
 						<!-- 이름, 가격 -->
 						<div>
-						 	<a href="${pageContext.request.contextPath}/upload/customer/goodsOne?goodsCode=${m.goodsCode}">
+						 	<a href="${pageContext.request.contextPath}/customer/goodsOne?goodsCode=${m.goodsCode}">
 							${m.goodsName}<br>
 							</a>
 							${m.goodsPrice}

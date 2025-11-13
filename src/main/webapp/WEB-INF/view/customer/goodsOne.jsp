@@ -13,20 +13,19 @@
 	<!-- customer meun include -->
 	<c:import url="/WEB-INF/view/inc/customerMenu.jsp"></c:import>
 	<hr>
-
-
+	
+	
 	<div>
 		${loginCustomer.customerName}님 반갑습니다.
 		(point : ${loginCustomer.point})
 		<a href="${pageContext.request.contextPath}/customer/customerLogout">로그아웃</a>
 	</div>
-
+	
 	<div>
 		<div>
 			<img src="${pageContext.request.contextPath}/upload/${goods.filename}" width="500" height="500">
 		</div>
 		<div>
-			<form>
 			<form id="myForm">
 				<input type="hidden" id="contextPath" value="${pageContext.request.contextPath}">
 				<input type="hidden" name="goodsCode" value="${goods.goodsCode}">
@@ -50,8 +49,7 @@
 					<tr>
 						<td>수량</td>
 						<td>
-							<select>
-							<select name="">
+							<select name="cartQuantity">
 								<c:forEach var="n" begin="1" end="10">
 									<option value="${n}">${n}</option>
 								</c:forEach>
@@ -59,8 +57,6 @@
 						</td>
 					</tr>
 				</table>
-				<button type="button">장바구니</button><!-- insert cart -->
-				<button type="button">바로주문</button><!-- 결제(화면) controller - insert orders  -->
 				<button id="cartBtn" type="button">장바구니</button><!-- insert cart -->
 				<button id="orderBtn" type="button">바로주문</button><!-- 결제(화면) controller - insert orders  -->
 			</form>
@@ -69,16 +65,16 @@
 	<script>
 		$('#cartBtn').click(function(){
 			$('#myForm').attr('method', 'post');
-			$('#myForm').attr('action', $('#contextPath').val()+'/customer/insertCart');
+			$('#myForm').attr('action', $('#contextPath').val()+'/customer/addCart');
 			alert('cartBtn:' + $('#myForm').attr('method') + ',' + $('#myForm').attr('action')); // cart 액션
-			// $('#myForm').submit();
+			$('#myForm').submit();
 		});
 		
 		$('#orderBtn').click(function(){
 			$('#myForm').attr('method', 'get');
-			$('#myForm').attr('action', $('#contextPath').val()+'/customer/insertOrders');
+			$('#myForm').attr('action', $('#contextPath').val()+'/customer/addOrders');
 			alert('orderBtn: ' + $('#myForm').attr('method') + ',' + $('#myForm').attr('action')); // orders 화면
-			// $('#myForm').submit();
+			$('#myForm').submit();
 		});
 	</script>
 </body>

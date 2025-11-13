@@ -17,124 +17,126 @@
 
 
 	<input type="hidden" id="contextPath" value="${pageContext.request.contextPath}">
-	
-	<input type="text" id="fromYM" value="2025-01-01">
+
+	<!-- 월 입력: YYYY-MM -->
+	<input type="month" id="fromYM" value="2025-01">
 	~
-	<input type="text" id="toYM" value="2025-12-31">
+	<input type="month" id="toYM"   value="2025-12">
 	
 	<br>
 	
-	<button type="button" id="order">특정년도의 월별 주문횟수(누적) : 선 차트</button>
+	<button type="button" id="btnTotalOrderCnt">특정년도의 월별 주문횟수(누적) : 선 차트</button>
+	<button type="button" id="btnTotalRevenue">특정년도의 월별 주문매출(누적) : 선 차트</button>
 	
-	<button type="button" id="revenue">특정년도의 월별 주문금액(누적) : 선 차트</button>
-
-	<button type="button" id="">특정년도의 월별 주문수량 : 막대 차트</button>
-	<button type="button" id="">특정년도의 월별 주문금액 : 막대 차트</button>
-	<button type="button" id="">고객별 주문횟수 1위 ~ 10위 : 막대 차트</button>
-	<button type="button" id="">고객별 총금액 1위 ~ 10위 : 막대 차트</button>
-	<button type="button" id="">상품별 주문횟수 1위 ~ 10위 : 막대 차트</button>
-	<button type="button" id="">상품별 주문금액 1위 ~ 10위 : 막대 차트</button>
-	<button type="button" id="">상품별 평균 리뷰평점 1위 ~ 10위 : 막대 차트</button>
-	<button type="button" id="">성별 총주문 금액 : 파이 차트</button>
-	<button type="button" id="">성별 총주문 수량 : 파이 차트</button>
-
+	<button type="button" id="btnOrderCntByYM">특정년도의 월별 주문수량 : 막대 차트</button>
+	<button type="button" id="btnOrderRevenueByYM">특정년도의 월별 주문매출 : 막대 차트</button>
+	
+	<button type="button" id="btnTop10CustCnt">고객별 주문횟수 1위 ~ 10위 : 막대 차트</button>
+	<button type="button" id="btnTop10CustRevenue">고객별 총매출 1위 ~ 10위 : 막대 차트</button>
+	<button type="button" id="btnTop10GoodsCnt">상품별 주문횟수 1위 ~ 10위 : 막대 차트</button>
+	<button type="button" id="btnTop10GoodsRevenue">상품별 매출 1위 ~ 10위 : 막대 차트</button>
+	<button type="button" id="btnTop10GoodsAvg">상품별 평균 리뷰평점 1위 ~ 10위 : 막대 차트</button>
+	
+	<button type="button" id="btnGenderOrderRevenue">성별 총주문 매출 : 파이 차트</button>
+	<button type="button" id="btnGenderOrderCnt">성별 총주문 수량 : 파이 차트</button>
+	
 	<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
 	
 	<script>
 		let myChart = null;
+		const ctxEl = document.getElementById('myChart');
+		const base = $('#contextPath').val();
+		const from = () => $('#fromYM').val();  // "YYYY-MM"
+		const to   = () => $('#toYM').val();
 		
-		$('#revenue').click(function(){
-			$.ajax({
-				url: $('#contextPath').val()+'/totalRevenue'
-				, type: 'get'
-				, data: {
-							fromYM: $('#fromYM').val()
-							, toYM: $('#toYM').val()
-						}
-				, success: function(result){ // result --> list
-					console.log(result);					
-					$('#myChart').empty();
-					
-					let x = [];
-					let y = [];
-					
-					console.log(x, x);
-					console.log(y, x);
-					
-					result.forEach(function(m){
-						x.push(m.ym);
-						y.push(m.totalRevenue);
-					});
-					
-					if(myChart != null) {
-						myChart.destroy();
-					} 
-					
-					myChart = new Chart("myChart", {
-					  type: "line",
-					  data: {
-					    labels: x,
-					    datasets: [{
-					      label: $('#fromYM').val() + '~' + $('#toYM').val() + '총판매금액 추이(누적)',
-					      data: y,
-					      borderColor: "#0000FF",
-					      fill: false
-					    }]
-					  },
-					  options: {
-					    legend: {display: false}
-					  }
-					});
-				} 
-			});
+		function reset(){ if(myChart) myChart.destroy(); }
+		function drawBar(labels,data,title){
+		  reset();
+		  myChart = new Chart(ctxEl, {
+		    type:'bar',
+		    data:{ labels, datasets:[{ data }] },
+		    options:{ plugins:{ legend:{display:false}, title:{display:true, text:title, font:{size:16}} },
+		              scales:{ y:{ beginAtZero:true } } }
+		  });
+		}
+		function drawLine(labels,data,title){
+		  reset();
+		  myChart = new Chart(ctxEl, {
+		    type:'line',
+		    data:{ labels, datasets:[{ label:title, data, fill:false }] },
+		    options:{ plugins:{ legend:{display:false} } }
+		  });
+		}
+		function drawPie(labels,data,title){
+		  reset();
+		  myChart = new Chart(ctxEl, {
+		    type:'pie',
+		    data:{ labels, datasets:[{ data }] },
+		    options:{ plugins:{ legend:{display:true}, title:{display:true, text:title, font:{size:16}} } }
+		  });
+		}
+		
+		/* ===== 월별/누적 ===== */
+		$('#btnOrderCntByYM').on('click', function(){
+		  $.getJSON(base + '/emp/order', { fromYM: from(), toYM: to() }, function(res){
+		    drawBar(res.map(m=>m.ym), res.map(m=>m.orderCnt), '월별 주문수량');
+		  });
 		});
-	
-	
-		$('#order').click(function(){
-			// alert('orderAndRevenue 클릭');
-			$.ajax({
-				url: $('#contextPath').val()+'/totalOrder'
-				, type: 'get'
-				, data: {
-							fromYM: $('#fromYM').val()
-							, toYM: $('#toYM').val()
-						}
-				, success: function(result){ // result --> list
-					console.log(result);					
-					$('#myChart').empty();
-					
-					let x = [];
-					let y = [];
-					
-					console.log(x, x);
-					console.log(y, x);
-					
-					result.forEach(function(m){
-						x.push(m.ym);
-						y.push(m.totalOrder);
-					});
-					
-					if(myChart != null) {
-						myChart.destroy();
-					} 
-					
-					myChart = new Chart("myChart", {
-					  type: "line",
-					  data: {
-					    labels: x,
-					    datasets: [{
-					      label: $('#fromYM').val() + '~' + $('#toYM').val() + '주문량 추이(누적)',
-					      data: y,
-					      borderColor: "red",
-					      fill: false
-					    }]
-					  },
-					  options: {
-					    legend: {display: false}
-					  }
-					});
-				} 
-			});
+		$('#btnOrderRevenueByYM').on('click', function(){
+		  $.getJSON(base + '/emp/orderRevenueByMonth', { fromYM: from(), toYM: to() }, function(res){
+		    drawBar(res.map(m=>m.ym), res.map(m=>m.orderRevenue), '월별 주문매출');
+		  });
+		});
+		$('#btnTotalOrderCnt').on('click', function(){
+		  $.getJSON(base + '/emp/totalOrder', { fromYM: from(), toYM: to() }, function(res){
+		    drawLine(res.map(m=>m.ym), res.map(m=>m.totalOrderCnt),
+		      from() + ' ~ ' + to() + ' 주문수량 추이(누적)');
+		  });
+		});
+		$('#btnTotalRevenue').on('click', function(){
+		  $.getJSON(base + '/emp/totalRevenue', { fromYM: from(), toYM: to() }, function(res){
+		    drawLine(res.map(m=>m.ym), res.map(m=>m.totalOrderRevenue),
+		      from() + ' ~ ' + to() + ' 주문매출 추이(누적)');
+		  });
+		});
+		
+		/* ===== 성별 파이 ===== */
+		$('#btnGenderOrderRevenue').on('click', function(){
+		  $.getJSON(base + '/emp/gender/orderRevenue', function(res){
+		    drawPie(res.map(m=>m.gender), res.map(m=>m.orderRevenue), '성별 총주문 매출');
+		  });
+		});
+		$('#btnGenderOrderCnt').on('click', function(){
+		  $.getJSON(base + '/emp/gender/orderCnt', function(res){
+		    drawPie(res.map(m=>m.gender), res.map(m=>m.orderCnt), '성별 총주문 수량');
+		  });
+		});
+		
+		/* ===== Top10 ===== */
+		$('#btnTop10CustCnt').on('click', function(){
+		  $.getJSON(base + '/emp/top10/customer/orderCnt', function(res){
+		    drawBar(res.map(m=>m.customerId), res.map(m=>m.orderCnt), '고객 Top10 (주문수량)');
+		  });
+		});
+		$('#btnTop10CustRevenue').on('click', function(){
+		  $.getJSON(base + '/emp/top10/customer/orderRevenue', function(res){
+		    drawBar(res.map(m=>m.customerId), res.map(m=>m.orderRevenue), '고객 Top10 (매출)');
+		  });
+		});
+		$('#btnTop10GoodsCnt').on('click', function(){
+		  $.getJSON(base + '/emp/top10/goods/orderCnt', function(res){
+		    drawBar(res.map(m=>m.goodsName), res.map(m=>m.orderCnt), '상품 Top10 (주문수량)');
+		  });
+		});
+		$('#btnTop10GoodsRevenue').on('click', function(){
+		  $.getJSON(base + '/emp/top10/goods/orderRevenue', function(res){
+		    drawBar(res.map(m=>m.goodsName), res.map(m=>m.orderRevenue), '상품 Top10 (매출)');
+		  });
+		});
+		$('#btnTop10GoodsAvg').on('click', function(){
+		  $.getJSON(base + '/emp/top10/goods/avgReviewScore', function(res){
+		    drawBar(res.map(m=>m.goodsName), res.map(m=>m.avgReviewScore), '상품 Top10 (평균 리뷰 평점)');
+		  });
 		});
 	</script>
 </body>
